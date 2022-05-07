@@ -35,7 +35,7 @@ const Index: NextPage = () => {
         <p>{product.data?.description}</p>
         <p>${product.data?.price}</p>
         <p>
-          {product.data?.rating.rate}/5 ({product.data?.rating.count})
+          {product.data?.rating?.rate}/5 ({product.data?.rating?.count})
         </p>
       </React.Suspense>
     </div>
