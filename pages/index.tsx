@@ -3,7 +3,7 @@ import type {NextPage} from "next"
 import Head from "next/head"
 import Image from "next/image"
 import {useQuery} from "react-query"
-import {ProductsResponse} from "./api/products"
+import {ProductsResponse} from "@/pages/api/products"
 import {useRouter} from "next/router"
 import Link from "next/link"
 import {api} from "@/services/api"
@@ -13,7 +13,7 @@ const Index: NextPage = () => {
   // not perfect, but the type string[] should not happen in this case
   const search = (router.query.search as string) ?? ""
 
-  const products = useQuery(["products", search], async () => {
+  const products = useQuery(["products", "all", search], async () => {
     const {data} = await api
       .get<ProductsResponse>("/products", {
         params: {
@@ -70,7 +70,7 @@ const Index: NextPage = () => {
               <p>
                 {product.rating.rate}/5 ({product.rating.count})
               </p>
-              <Link href="/products/hello">Go to</Link>
+              <Link href={`/products/${product.id}`}>Go to</Link>
             </div>
           ))}
         </React.Suspense>

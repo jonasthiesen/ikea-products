@@ -2,7 +2,7 @@ import type {NextApiRequest, NextApiResponse} from "next"
 import type {Product} from "@/types/product"
 import products from "@/data/products.json"
 
-export type ProductsResponse = {
+export type ProductResponse = {
   data: Product
 }
 
@@ -12,7 +12,7 @@ type ErrorResponse = {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<ProductsResponse | ErrorResponse>
+  res: NextApiResponse<ProductResponse | ErrorResponse>
 ) {
   const productId = parseInt(req.query.productId as string, 10)
 
