@@ -14,6 +14,7 @@ import {Input} from "@/components/input"
 import {Text} from "@/components/text"
 import {useDebounce} from "react-use"
 import {Stack} from "@/components/stack"
+import {Card} from "@/components/card"
 
 const ProductsGrid = styled("div", {
   display: "grid",
@@ -79,7 +80,6 @@ const Index: NextPage = () => {
       <Head>
         <title>Products</title>
         <meta name="description" content="Product listings" />
-        <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <Box
@@ -125,13 +125,9 @@ const Index: NextPage = () => {
         <ProductsGrid>
           {products?.data?.map((product) => (
             <Link key={product.id} href={`/products/${product.id}`}>
-              <Box
+              <Card
+                as="article"
                 css={{
-                  backgroundColor: "$loContrast",
-                  borderWidth: "1px",
-                  borderStyle: "solid",
-                  borderColor: "$gray4",
-                  borderRadius: "$2",
                   padding: "$2",
                   transition: "box-shadow 150ms ease",
                   cursor: "pointer",
@@ -156,7 +152,7 @@ const Index: NextPage = () => {
                     {product.rating.rate}/5 ({product.rating.count})
                   </Text>
                 </Stack>
-              </Box>
+              </Card>
             </Link>
           ))}
         </ProductsGrid>
