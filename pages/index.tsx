@@ -49,15 +49,21 @@ const Index: NextPage = () => {
 
   useDebounce(
     () => {
-      const url = new URL(window.location.href)
+      // To preserve scroll restoration. When going back, searchTerm will
+      // technically update so we need to make sure there was an actual change
+      // before updating the URL, because it acts as our state and will
+      // cause a re-render when changing (loosing the scroll restoration).
+      if (search !== searchTerm) {
+        const url = new URL(window.location.href)
 
-      if (searchTerm !== "") {
-        url.searchParams.set("search", searchTerm)
-      } else {
-        url.searchParams.delete("search")
+        if (searchTerm !== "") {
+          url.searchParams.set("search", searchTerm)
+        } else {
+          url.searchParams.delete("search")
+        }
+
+        router.push(url.toString())
       }
-
-      router.push(url.toString())
     },
     300,
     [searchTerm]
