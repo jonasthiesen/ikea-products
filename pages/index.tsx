@@ -4,7 +4,6 @@ import Head from "next/head"
 import Image from "next/image"
 import {useQuery} from "react-query"
 import {ProductsResponse} from "@/pages/api/products"
-import {useRouter} from "next/router"
 import Link from "next/link"
 import {api} from "@/services/api"
 import {Box} from "@/components/box"
@@ -12,9 +11,9 @@ import {Heading} from "@/components/heading"
 import {styled} from "@/stitches.config"
 import {Input} from "@/components/input"
 import {Text} from "@/components/text"
-import {useDebounce} from "react-use"
 import {Stack} from "@/components/stack"
 import {Card} from "@/components/card"
+import {useSearch} from "@/hooks/use-search"
 
 const ProductsGrid = styled("div", {
   display: "grid",
@@ -32,16 +31,13 @@ const ProductsGrid = styled("div", {
 })
 
 const Index: NextPage = () => {
-  const router = useRouter()
-  // not perfect, but the type string[] should not happen in this case
-  const search = (router.query.search as string | undefined) ?? ""
-  const [searchTerm, setSearchTerm] = React.useState<string | undefined>()
+  const search = useSearch()
 
-  const products = useQuery(["products", "all", search], async () => {
+  const products = useQuery(["products", "all", search.value], async () => {
     const {data} = await api
       .get<ProductsResponse>("/products", {
         params: {
-          search,
+          search: search.value,
         },
       })
       .then((res) => res.data)
@@ -49,37 +45,8 @@ const Index: NextPage = () => {
     return data
   })
 
-  // Since useState runs on the server as well, that means `search` won't
-  // be available server side and we need to set it on the client once the
-  // router has re-hydrated.
-  React.useEffect(() => {
-    if (router.isReady) {
-      setSearchTerm(search)
-    }
-  }, [router.isReady, search])
-
-  useDebounce(
-    () => {
-      // To preserve scroll restoration. When going back, searchTerm will
-      // technically update so we need to make sure there was an actual change
-      // before updating the URL, because it acts as our state and will
-      // cause a re-render when changing (loosing the scroll restoration).
-      if (search !== searchTerm && searchTerm !== undefined) {
-        const url = new URL(window.location.href)
-        if (searchTerm !== "") {
-          url.searchParams.set("search", searchTerm)
-        } else {
-          url.searchParams.delete("search")
-        }
-        router.push(url.toString())
-      }
-    },
-    300,
-    [searchTerm]
-  )
-
   function handleSearch(event: React.FormEvent<HTMLInputElement>) {
-    setSearchTerm(event.currentTarget.value)
+    search.update(event.currentTarget.value)
   }
 
   return (
@@ -110,7 +77,7 @@ const Index: NextPage = () => {
             mx: "auto",
           }}
           placeholder="Try 'backpack'"
-          value={searchTerm ?? ""}
+          value={search.value}
           onChange={handleSearch}
         />
       </Box>
