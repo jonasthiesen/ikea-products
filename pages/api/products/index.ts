@@ -17,7 +17,7 @@ export default async function handler(
     return res.status(200).json({data: products})
   }
 
-  res.status(200).send({
+  res.status(200).json({
     data: matchSorter(products, search, {
       keys: [
         "title",

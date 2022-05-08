@@ -17,7 +17,7 @@ export default async function handler(
   const productId = parseInt(req.query.productId as string, 10)
 
   if (Number.isNaN(productId)) {
-    return res.status(400).send({
+    return res.status(400).json({
       error: `The product id provided is not valid, you provided: '${req.query.productId}'`,
     })
   }
@@ -25,7 +25,7 @@ export default async function handler(
   const foundProduct = products.find((product) => product.id === productId)
 
   if (foundProduct === undefined) {
-    return res.status(404).send({
+    return res.status(404).json({
       error: `No product found with product id: '${productId}'`,
     })
   }
