@@ -5,8 +5,16 @@ on:
 env:
   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 jobs:
+  test:
+      name: Test the app
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v2
+        - run: yarn
+        - run: yarn test
   deploy:
       name: Deploy app
+      needs: test
       runs-on: ubuntu-latest
       steps:
         - uses: actions/checkout@v2
