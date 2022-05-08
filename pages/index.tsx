@@ -34,8 +34,8 @@ const ProductsGrid = styled("div", {
 const Index: NextPage = () => {
   const router = useRouter()
   // not perfect, but the type string[] should not happen in this case
-  const search = (router.query.search as string) ?? ""
-  const [searchTerm, setSearchTerm] = React.useState<string>(search)
+  const search = (router.query.search as string | undefined) ?? ""
+  const [searchTerm, setSearchTerm] = React.useState<string | undefined>()
 
   const products = useQuery(["products", "all", search], async () => {
     const {data} = await api
@@ -49,21 +49,28 @@ const Index: NextPage = () => {
     return data
   })
 
+  // Since useState runs on the server as well, that means `search` won't
+  // be available server side and we need to set it on the client once the
+  // router has re-hydrated.
+  React.useEffect(() => {
+    if (router.isReady) {
+      setSearchTerm(search)
+    }
+  }, [router.isReady, search])
+
   useDebounce(
     () => {
       // To preserve scroll restoration. When going back, searchTerm will
       // technically update so we need to make sure there was an actual change
       // before updating the URL, because it acts as our state and will
       // cause a re-render when changing (loosing the scroll restoration).
-      if (search !== searchTerm) {
+      if (search !== searchTerm && searchTerm !== undefined) {
         const url = new URL(window.location.href)
-
         if (searchTerm !== "") {
           url.searchParams.set("search", searchTerm)
         } else {
           url.searchParams.delete("search")
         }
-
         router.push(url.toString())
       }
     },
@@ -103,7 +110,7 @@ const Index: NextPage = () => {
             mx: "auto",
           }}
           placeholder="Try 'backpack'"
-          value={searchTerm}
+          value={searchTerm ?? ""}
           onChange={handleSearch}
         />
       </Box>
