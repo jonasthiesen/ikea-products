@@ -13,8 +13,9 @@ import {styled} from "@/stitches.config"
 import {Input} from "@/components/input"
 import {Text} from "@/components/text"
 import {useDebounce} from "react-use"
+import {Stack} from "@/components/stack"
 
-const ProductGrid = styled("div", {
+const ProductsGrid = styled("div", {
   display: "grid",
   gridTemplateColumns: "repeat(1, 1fr)",
   gap: "$2",
@@ -121,44 +122,44 @@ const Index: NextPage = () => {
           },
         }}
       >
-        <React.Suspense fallback={<p>Loading...</p>}>
-          <ProductGrid>
-            {products?.data?.map((product) => (
-              <Link key={product.id} href={`/products/${product.id}`}>
-                <Box
-                  css={{
-                    backgroundColor: "$loContrast",
-                    borderWidth: "1px",
-                    borderStyle: "solid",
-                    borderColor: "$gray4",
-                    borderRadius: "$2",
-                    padding: "$2",
-                    transition: "box-shadow 150ms ease",
-                    cursor: "pointer",
-                    "&:hover": {
-                      boxShadow: "$3",
-                    },
-                  }}
-                >
-                  <Image
-                    src={product.image}
-                    alt=""
-                    width="100%"
-                    height="100%"
-                    layout="responsive"
-                    objectFit="contain"
-                  />
-                  <Heading size="4">{product.title}</Heading>
-                  <Text>{product.category}</Text>
+        <ProductsGrid>
+          {products?.data?.map((product) => (
+            <Link key={product.id} href={`/products/${product.id}`}>
+              <Box
+                css={{
+                  backgroundColor: "$loContrast",
+                  borderWidth: "1px",
+                  borderStyle: "solid",
+                  borderColor: "$gray4",
+                  borderRadius: "$2",
+                  padding: "$2",
+                  transition: "box-shadow 150ms ease",
+                  cursor: "pointer",
+                  "&:hover": {
+                    boxShadow: "$3",
+                  },
+                }}
+              >
+                <Image
+                  src={product.image}
+                  alt=""
+                  width="100%"
+                  height="100%"
+                  layout="responsive"
+                  objectFit="contain"
+                />
+                <Heading size="4">{product.title}</Heading>
+                <Stack direction="row" spacing="1">
                   <Text>${product.price}</Text>
+                  <Text>·</Text>
                   <Text>
                     {product.rating.rate}/5 ({product.rating.count})
                   </Text>
-                </Box>
-              </Link>
-            ))}
-          </ProductGrid>
-        </React.Suspense>
+                </Stack>
+              </Box>
+            </Link>
+          ))}
+        </ProductsGrid>
       </Box>
     </div>
   )
