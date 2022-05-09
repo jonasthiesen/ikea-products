@@ -98,9 +98,9 @@ const Index: NextPage = () => {
       >
         <ProductsGrid>
           {products?.data?.map((product) => (
-            <Link key={product.id} href={`/products/${product.id}`}>
+            <Link passHref key={product.id} href={`/products/${product.id}`}>
               <Card
-                as="article"
+                as="a"
                 css={{
                   padding: "$2",
                   transition: "box-shadow 150ms ease",
